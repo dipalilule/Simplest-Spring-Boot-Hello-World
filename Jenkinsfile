@@ -1,30 +1,52 @@
 pipeline {
     agent any
-
     stages {
-        stages {
         stage('SCM checkout') {
             steps {
                git 'https://github.com/Kiranug/Simplest-Spring-Boot-Hello-World.git'
           }
         }
-        stage('docker build') {
+         stage('Build') {
             steps {
-                sh """
-               //docker build --no-cache -t 595552316002.dkr.ecr.ap-south-1.amazonaws.com/nodejs-image-demo:$BUILD_NUMBER .
-               """
+                echo 'Building..'
+                sh 'mvn clean package'
             }
+             post {
+                 success {
+                    echo 'Now Archiving...'
+                    archiveArtifacts artifacts: '**/target/*.war'
+                 }
+             }
         }
-        stage('Deploy') {
+        /* stage('DeployToStaging') {
+            when {
+                branch 'master'
+            }
             steps {
-                 sh """
-               
-                // docker pull 595552316002.dkr.ecr.ap-south-1.amazonaws.com/nodejs-image-demo:$BUILD_NUMBER
-                 //docker run -p 8000:8081 -d 595552316002.dkr.ecr.ap-south-1.amazonaws.com/nodejs-image-demo:$BUILD_NUMBE
-
-              """
-              }
+                withCredentials([usernamePassword(credentialsId: 'webserver_login', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
+                    sshPublisher(
+                        failOnError: true,
+                        continueOnError: false,
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'Staging',
+                                sshCredentials: [
+                                    username: "$USERNAME",
+                                    encryptedPassphrase: "$USERPASS"
+                                ], 
+                                transfers: [
+                                    sshTransfer(
+                                        sourceFiles: '/var/lib/jenkins/workspace/maven-git_pipeline/webapp/target/webapp.war',
+                                        removePrefix: '/var/lib/jenkins/workspace/maven-git_pipeline/webapp/target/',
+                                        remoteDirectory: '/usr/share/tomcat/webapps/',
+                                        execCommand: 'sudo systemctl restart tomcat'
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                }
             }
-        }
+        } */
     }
 }
