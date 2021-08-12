@@ -23,6 +23,7 @@ pipeline {
             steps {
                 echo 'Docker image Building..'
                 sh """
+                gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
                 docker build -t helloapp .
                 docker tag helloapp gcr.io/neural-mantra-303016/helloapp:${currentBuild.number}
                 docker push gcr.io/neural-mantra-303016/helloapp:${currentBuild.number}
