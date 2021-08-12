@@ -18,6 +18,20 @@ pipeline {
                  }
              }
         }
+        
+          stage('Docker Build') {
+            steps {
+                echo 'Docker image Building..'
+                sh """
+                docker build -t helloapp .
+                docker tag 
+                docker tag helloapp gcr.io/neural-mantra-303016/helloapp:v1
+                docker push gcr.io/neural-mantra-303016/helloapp:v1      
+                """
+                
+            }
+        }
+        
         /* stage('DeployToStaging') {
             when {
                 branch 'master'
