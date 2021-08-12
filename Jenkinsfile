@@ -23,9 +23,7 @@ pipeline {
                  //docker run -p 8000:8081 -d 595552316002.dkr.ecr.ap-south-1.amazonaws.com/nodejs-image-demo:$BUILD_NUMBE
 
               """
-              
-
-
+              }
             }
         }
     }
