@@ -24,9 +24,8 @@ pipeline {
                 echo 'Docker image Building..'
                 sh """
                 docker build -t helloapp .
-                docker tag 
-                docker tag helloapp gcr.io/neural-mantra-303016/helloapp:v1
-                docker push gcr.io/neural-mantra-303016/helloapp:v1      
+                docker tag helloapp gcr.io/neural-mantra-303016/helloapp:${currentBuild.number}
+                docker push gcr.io/neural-mantra-303016/helloapp:${currentBuild.number}
                 """
                 
             }
